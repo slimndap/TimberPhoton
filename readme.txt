@@ -7,10 +7,10 @@ Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Make the Timber plugin work with Jetpack's Photon. Once installed, all TimberImages will use Photon as a CDN and for image manipulation (eg. resize).
+Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
 
 == Description ==
-Make the Timber plugin work with Jetpack's Photon. Once installed, all TimberImages will use Photon as a CDN and for image manipulation (eg. resize).
+Make the Timber plugin work with Jetpack's Photon. Once installed, all TimberImages use Photon as a CDN and for image manipulation (eg. resize).
 
 Requires the [Timber plugin](http://jarednova.github.io/timber/) by [Jared Nova](http://profiles.wordpress.org/jarednova/) and the Jetpack plugin with Photon activated.
 
@@ -27,6 +27,8 @@ __Author__
 Look for 'Timber with Jetpack Photon' in the plugin repository.
 
 == Changelog ==
+= 0.2 =
+* Added support for the upcoming `timber_image_src` filter.
 
 = 0.1 =
 * Proof of concept.
