@@ -51,7 +51,7 @@ class TimberPhoton {
 		$src = $this->photon_url($src);
 				
 		/* Apply letterbox
-		 * Photon API: Add black letterboxing effect to images, by scaling them to width, height 
+		 * Photon docs: Add black letterboxing effect to images, by scaling them to width, height 
 		 * while maintaining the aspect ratio and filling the rest with black. 
 		 * See: http://developer.wordpress.com/docs/photon/api/#lb
 		 */
@@ -79,7 +79,7 @@ class TimberPhoton {
 		$src = $this->photon_url($src);
 
 		/* Set width
-		 * Photon API: Set the width of an image. Defaults to pixels, supports percentages. 
+		 * Photon docs: Set the width of an image. Defaults to pixels, supports percentages. 
 		 * See: http://developer.wordpress.com/docs/photon/api/#w
 		 */
 		 
@@ -88,83 +88,6 @@ class TimberPhoton {
 		);
 		
 		/* Use resize if height is set
-		 * Photon API: Resize and crop an image to exact width,height pixel dimensions. 
+		 * Photon docs: Resize and crop an image to exact width,height pixel dimensions. 
 		 * Set the first number as close to the target size as possible and then crop the rest. 
-		 * Which direction it’s resized and cropped depends on the aspect ratios of the original image and the target size.
-		 * See: http://developer.wordpress.com/docs/photon/api/#resize
-		 */
-		 
-		if (!empty($h)) {
-			$args['resize'] = $w.','.$h;
-			unset ($args['w']);
-		}
-
-		$src = add_query_arg($args, $src);
-	
-		return $src;
-	}
-	
-	function plugins_loaded() {
-		if ($this->system_ready()) {
-			add_action('twig_apply_filters', array(&$this, 'twig_apply_filters'), 99);
-			add_filter('timber_image_src', array($this, 'timber_image_src'));
-		}		
-	}
-	
-	/*
-	 * Translate a URL to a Photon URL.
-	 * Photon API: http://i0.wp.com/$REMOTE_IMAGE_URL
-	 */
-	
-	function photon_url($url) {
-		if ($parsed = parse_url($url)) {
-			if (in_array($parsed['host'], $this->photon_hosts)) {
-				// $url is already a Photon URL.
-				// Leave it alone.
-			} else {
-				// Strip http:// from $url.
-				$stripped_url = $parsed['host'].$parsed['path'];
-				if (!empty($parsed['query'])) {
-					$stripped_url.= '?'.$parsed['query'];
-				}
-				
-				// Create a Photon URL.
-				$url = $parsed['scheme'].'://i0.wp.com/'.$stripped_url;		
-			}
-		}
-		return $url;
-	}
-	
-	/*
-	 * Check if Timber and Jetpack are installed and activated.
-	 * Check if Photon is activated
-	 */
-	
-	function system_ready() {
-		global $timber;
-	
-		// Is Timber installed and activated?
-		if (!class_exists('Timber')) {
-			$this->admin_notices[] = 'timber';
-			add_action( 'admin_notices', array($this,'admin_notices'));
-			return false;
-		}
-		
-		// Determine if Jetpack is installed and can generate photon URLs.
-		if (!class_exists( 'Jetpack' ) || !method_exists( 'Jetpack', 'get_active_modules' ) || !in_array( 'photon', Jetpack::get_active_modules() )) {
-			$this->admin_notices[] = 'photon';
-			add_action( 'admin_notices', array($this,'admin_notices'));
-			return false;
-		}
-		
-		return true;
-	}
-	
-	function timber_image_src($src) {
-		return $this->photon_url($src);
-	}
-}
-
-new TimberPhoton();
-
-?>
+		 * Which direction it’s resized and cropped depends on the aspect rat
