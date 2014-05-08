@@ -4,7 +4,7 @@ Plugin Name: Timber with Jetpack Photon
 Plugin URI: http://slimndap.com
 Description: Make the Timber plugin work with Jetpack's Photon. Once installed, all TimberImages will use Photon as a CDN and for image manipulation (eg. resize).
 Author: Jeroen Schmit
-Version: 0.2
+Version: 0.3
 Author URI: http://slimndap.com
 */	
 
@@ -19,11 +19,11 @@ class TimberPhoton {
 		
 		add_action('plugins_loaded',array($this,'plugins_loaded'));
 		
-		
 	}
 	
-	function add_twig_filters($twig) {
+	function twig_apply_filters($twig) {
 		$twig->addFilter('resize', new Twig_Filter_Function(array($this, 'resize')));
+		$twig->addFilter('letterbox', new Twig_Filter_Function(array($this, 'letterbox')));
 		return $twig;
 	}
 	
@@ -39,6 +39,32 @@ class TimberPhoton {
 			echo '</p></div>';
 		}
 	}
+	
+	
+	function letterbox($src, $w, $h, $color = '#000000', $force = false) {
+
+		/* 
+		 * Translate the URL.
+		 * Only necessary for Timber versions (0.18.0 and older) that lack the 'timber_image_src' filter.
+		 */
+		 
+		$src = $this->photon_url($src);
+				
+		/* Apply letterbox
+		 * Photon API: Add black letterboxing effect to images, by scaling them to width, height 
+		 * while maintaining the aspect ratio and filling the rest with black. 
+		 * See: http://developer.wordpress.com/docs/photon/api/#lb
+		 */
+
+		$args = array(
+			'lb' => $w.','.$h
+		);
+		 
+		$src = add_query_arg($args, $src);
+		
+		return $src;
+	}
+	
 	
 	function resize($src, $w, $h = 0, $crop = 'default', $force_resize = false ) {
 		if (empty($src)){
@@ -80,7 +106,7 @@ class TimberPhoton {
 	
 	function plugins_loaded() {
 		if ($this->system_ready()) {
-			add_action('twig_apply_filters', array(&$this, 'add_twig_filters'), 99);
+			add_action('twig_apply_filters', array(&$this, 'twig_apply_filters'), 99);
 			add_filter('timber_image_src', array($this, 'timber_image_src'));
 		}		
 	}

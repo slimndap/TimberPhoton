@@ -47,6 +47,9 @@ __Author__
 Look for 'Timber with Jetpack Photon' in the plugin repository.
 
 == Changelog ==
+= 0.3 =
+* Added support for the 'letterbox' filter.
+
 = 0.2 =
 * Added support for the upcoming `timber_image_src` filter.
 
