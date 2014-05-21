@@ -44,55 +44,60 @@ class TimberPhoton {
 	private function crop($src, $w, $h = 0, $crop) {
 		$image = wp_get_image_editor($src);
 
-		
 		if (!is_wp_error($image)) {
 			$current_size = $image->get_size();
 			$src_w = $current_size['width'];
 			$src_h = $current_size['height'];
-			
+						
+			$src_ratio = $src_w / $src_h;
+
 			if ( ! $h ) {
 				$h = round( $w / $src_ratio);
 			}
 
+			$dest_ratio = $w / $h;
+			
+			$src_wt = $src_h * $dest_ratio;
+			$src_ht = $src_w / $dest_ratio;
+			
 			//start with defaults:
 			$args = array(
-				'x' => $src_w / 2 - $src_wt / 2,
-				'y' => ( $src_h - $src_ht ) / 6,
-				'w' => round(($w / $src_w) * 100),
-				'h' => round(($h / $src_h) * 100)
+				'x' => round($src_w / 2 - $src_wt / 2).'px',
+				'y' => round(($src_h - $src_ht ) / 6).'px'
 			);
 
-			if ($w > $h) {
-				// target is landscape
-				$args['x'] = 0;
-				if ($src_w > $src_h) {
-					// source is landscape
-					$args['w'] = $src_w.'px';
-					$args['h'] = round($src_w * ($h / $w)).'px';
-				} else {
-					// source is portrait or square
-					
-				}
-			} else {
-				// target is portrait or square
-				$args['y'] = 0;
-				if ($src_w > $src_h) {
-					// source is landscape
-				} else {
-					// source is portrait or square
-					
-				}
-			}
-			
 			switch ($crop) {
 				case 'center' :
+					$args['x'] = round( ( $src_w - $src_wt ) / 2 ).'px';
+					$args['y'] = round( ( $src_h - $src_ht ) / 2 ).'px';
+					break;
 				case 'top' :
-				case 'bottom' :
-				case 'left' :
-				case 'right' :
 					$args['y'] = 0;
 					break;
+				case 'bottom' :
+					$args['y'] = $src_h - $src_ht.'px';
+					break;
+				case 'left' :
+					$args['x'] = 0;
+					break;
+				case 'right' :
+					$args['x'] = $src_w - $src_wt.'px';
+					break;
 			}
+
+
+			if ($dest_ratio > $src_ratio) {
+				// source is taller than target
+				$args['x'] = 0;
+				$args['w'] = $src_w.'px';
+				$args['h'] = round($src_w * ($h / $w)).'px';
+			} else {
+				// target is taller than or equal to source
+				$args['y'] = 0;
+				$args['h'] = $src_h.'px';
+				$args['w'] = round($src_h * ($w / $h)).'px';
+			}
+			
 
 			$src = $this->photon_url($src);
 			
@@ -141,8 +146,8 @@ class TimberPhoton {
 		 * Use Photon crop for non default crops.
 		 */
 		 
-		if ($crop!='default') {
-			$src =  $this->crop($src, $w, $h, $crop);
+		if ($crop) {
+			$src = $this->crop($src, $w, $h, $crop);
 		}
 
 		/* 
