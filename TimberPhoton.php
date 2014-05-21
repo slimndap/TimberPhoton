@@ -41,10 +41,68 @@ class TimberPhoton {
 	}
 	
 	
-	function crop($src, $w, $h, $crop) {
-		$image = wp_get_image_editor($src) {
+	private function crop($src, $w, $h = 0, $crop) {
+		$image = wp_get_image_editor($src);
+
+		
+		if (!is_wp_error($image)) {
+			$current_size = $image->get_size();
+			$src_w = $current_size['width'];
+			$src_h = $current_size['height'];
 			
+			if ( ! $h ) {
+				$h = round( $w / $src_ratio);
+			}
+
+			//start with defaults:
+			$args = array(
+				'x' => $src_w / 2 - $src_wt / 2,
+				'y' => ( $src_h - $src_ht ) / 6,
+				'w' => round(($w / $src_w) * 100),
+				'h' => round(($h / $src_h) * 100)
+			);
+
+			if ($w > $h) {
+				// target is landscape
+				$args['x'] = 0;
+				if ($src_w > $src_h) {
+					// source is landscape
+					$args['w'] = $src_w.'px';
+					$args['h'] = round($src_w * ($h / $w)).'px';
+				} else {
+					// source is portrait or square
+					
+				}
+			} else {
+				// target is portrait or square
+				$args['y'] = 0;
+				if ($src_w > $src_h) {
+					// source is landscape
+				} else {
+					// source is portrait or square
+					
+				}
+			}
+			
+			switch ($crop) {
+				case 'center' :
+				case 'top' :
+				case 'bottom' :
+				case 'left' :
+				case 'right' :
+					$args['y'] = 0;
+					break;
+			}
+
+			$src = $this->photon_url($src);
+			
+			$src = add_query_arg(
+				'crop',
+				implode(',',$args), 
+				$src
+			);
 		}
+
 		
 		return $src;
 	}
@@ -79,6 +137,14 @@ class TimberPhoton {
 			return '';
 		}
 		
+		/*
+		 * Use Photon crop for non default crops.
+		 */
+		 
+		if ($crop!='default') {
+			$src =  $this->crop($src, $w, $h, $crop);
+		}
+
 		/* 
 		 * Translate the URL.
 		 * Only necessary for Timber versions (0.18.0 and older) that lack the 'timber_image_src' filter.
@@ -86,14 +152,6 @@ class TimberPhoton {
 		 
 		$src = $this->photon_url($src);
 		
-		/*
-		 * Use Photon crop for non default crops.
-		 */
-		 
-		if ($crop!='default') {
-			return $this->crop($src, $w, $h, $crop);
-		}
-
 		/* Set width
 		 * Photon docs: Set the width of an image. Defaults to pixels, supports percentages. 
 		 * See: http://developer.wordpress.com/docs/photon/api/#w
