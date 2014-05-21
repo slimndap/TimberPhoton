@@ -41,6 +41,14 @@ class TimberPhoton {
 	}
 	
 	
+	function crop($src, $w, $h, $crop) {
+		$image = wp_get_image_editor($src) {
+			
+		}
+		
+		return $src;
+	}
+	
 	function letterbox($src, $w, $h, $color = '#000000', $force = false) {
 
 		/* 
@@ -77,6 +85,14 @@ class TimberPhoton {
 		 */
 		 
 		$src = $this->photon_url($src);
+		
+		/*
+		 * Use Photon crop for non default crops.
+		 */
+		 
+		if ($crop!='default') {
+			return $this->crop($src, $w, $h, $crop);
+		}
 
 		/* Set width
 		 * Photon docs: Set the width of an image. Defaults to pixels, supports percentages. 
