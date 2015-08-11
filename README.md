@@ -1,7 +1,7 @@
 TimberPhoton
 ============
 
-Make the Timber plugin work with Jetpack's Photon. Once installed, all TimberImages use Photon as a CDN and for image manipulation (eg. resize).
+Make the [Timber](https://wordpress.org/plugins/timber-library/) plugin work with Jetpack's Photon. Once installed, all TimberImages use Photon as a CDN and for image manipulation (eg. resize).
 
 [Photon](http://jetpack.me/support/photon/) is an image acceleration and modification service for Jetpack-connected WordPress sites. Converted images are cached automatically and served from the WordPress.com CDN. Photon is part of the Jetpack plugin and completely free.
 
