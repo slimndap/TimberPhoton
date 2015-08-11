@@ -1,6 +1,6 @@
 === Timber with Jetpack Photon ===
 Contributors: slimndap
-Tags: timber, jetpack, photon, cdn, images, imagemanipulation
+Tags: timber, jetpack, photon, cdn, images, imagemanipulation, twig
 Requires at least: 3.8
 Tested up to: 3.9
 Stable tag: trunk
@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Plug-in to use JetPack's free Photon image manipulation and CDN with Timber.
 
 == Description ==
-Make the Timber plugin work with Jetpack's Photon. Once installed, all TimberImages use Photon as a CDN and for image manipulation (eg. resize).
+Make the [Timber](https://wordpress.org/plugins/timber-library/) plugin work with Jetpack's Photon. Once installed, all TimberImages use Photon as a CDN and for image manipulation (eg. resize).
 
 [Photon](http://jetpack.me/support/photon/) is an image acceleration and modification service for Jetpack-connected WordPress sites. Converted images are cached automatically and served from the WordPress.com CDN. Photon is part of the Jetpack plugin and completely free.
 
