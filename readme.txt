@@ -16,14 +16,8 @@ Make the [Timber](https://wordpress.org/plugins/timber-library/) plugin work wit
 
 === What does it do? ===
 
-Timber with Jetpack Photon extends the current TimberImage class to use Photon to serve and manipulate your images.
+Timber with Jetpack Photon extends the current TimberImage class to use Photon to serve and manipulate your images:
 
-With the current version of Timber (0.18.0):
-* `{{post.thumbnail.src}}` remains untouched
-* `{{post.thumbnail.src|resize(100)}}` returns a Photon URL
-* `{{post.thumbnail.src|resize(100,200)}}` returns a Photon URL
-
-With the upcoming version of Timber:
 * `{{post.thumbnail.src}}` returns a Photon URL
 * `{{post.thumbnail.src|resize(100)}}` returns a Photon URL
 * `{{post.thumbnail.src|resize(100,200)}}` returns a Photon URL
