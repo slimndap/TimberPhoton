@@ -4,7 +4,7 @@ Plugin Name: Timber with Jetpack Photon
 Plugin URI: http://slimndap.com
 Description: Make the Timber plugin work with Jetpack's Photon. Once installed, all TimberImages will use Photon as a CDN and for image manipulation (eg. resize).
 Author: Jeroen Schmit
-Version: 0.3
+Version: 0.4
 Author URI: http://slimndap.com
 */	
 
@@ -104,8 +104,17 @@ class TimberPhoton {
 		return $src;
 	}
 	
+	/**
+	 * Activates hooks that add Photon support to Timber.
+	 *
+	 * @since	0.1
+	 * @since	0.4	Added support for the renamed 'timber/twig/filters' in Timber.
+	 * 
+	 * @return void
+	 */
 	function plugins_loaded() {
 		if ($this->system_ready()) {
+			add_action('timber/twig/filters', array(&$this, 'twig_apply_filters'), 99);
 			add_action('twig_apply_filters', array(&$this, 'twig_apply_filters'), 99);
 			add_filter('timber_image_src', array($this, 'timber_image_src'));
 		}		
@@ -124,8 +133,17 @@ class TimberPhoton {
 			} else {
 				// Strip http:// from $url.
 				$stripped_url = $parsed['host'].$parsed['path'];
+
+				$args = array();
+				
 				if (!empty($parsed['query'])) {
-					$stripped_url.= '?'.$parsed['query'];
+					$args = parse_str($parsed['query']);
+				}
+				
+				$args = apply_filters('jetpack_photon_pre_args', $args, $url, $parsed['scheme']);
+
+				if (!empty($args)) {
+					$stripped_url.= '?'.http_build_query( $args );
 				}
 				
 				/*
